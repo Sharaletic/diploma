@@ -1,0 +1,47 @@
+name: ui_kit
+description: "Компоненты пользовательского интерфейса мобильного приложения"
+version: 0.0.1
+resolution: workspace
+
+environment:
+  sdk: ^3.12.0-320.0.dev
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  fonts:
+    - family: Honor
+      fonts:
+        - asset: fonts/HONORSansVFCondensed.ttf
+
+    - family: HonorNormal
+      fonts:
+        - asset: fonts/HONORSansVFNormal.ttf
+
+    - family: Milligram
+      fonts:
+        - asset: fonts/Milligram-Heavy-trial.ttf
+
+    - family: Fact-CompressedBold
+      fonts:
+        - asset: fonts/Fact-CompressedBold.ttf
+
+    - family: Fact
+      fonts:
+        - asset: fonts/Fact-Regular.ttf
+          weight: 400
+        - asset: fonts/Fact-Medium.ttf
+          weight: 500
+        - asset: fonts/Fact-Bold.ttf
+          weight: 900

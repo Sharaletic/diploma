@@ -1,0 +1,45 @@
+name: diploma
+description: "A new Flutter project."
+publish_to: "none"
+version: 1.0.0+1
+workspace:
+  - packages/ui_kit
+
+environment:
+  sdk: ^3.12.0-320.0.dev
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+
+  ui_kit:
+
+  cupertino_icons: ^1.0.8
+  http: ^1.6.0
+  path: ^1.9.1
+  logger: ^2.8.0
+  flutter_bloc: ^9.1.1
+  intl: any
+  flutter_secure_storage: ^11.2.0
+  freezed: ^3.2.5
+  freezed_annotation: ^3.1.0
+  uuid: ^4.6.0
+  auto_route: ^11.2.0
+  bloc_concurrency: ^0.3.0
+  auto_route_generator: ^10.5.0
+  drift: ^2.35.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  json_serializable: ^6.14.1
+  build_runner: ^2.15.1
+
+flutter:
+  uses-material-design: true
+  generate: true

@@ -1,0 +1,97 @@
+{
+  "@@locale": "ru",
+  "helloWorld": "Привет, мир!",
+  "@helloWorld": {
+    "description": "Обычное приветствие для начинающих программистов"
+  },
+
+  "loginTitle": "Войдите или создайте свой аккаунт",
+  "@loginTitle": {
+    "description": "Заголовок экрана входа в приложение"
+  },
+  
+  "phoneLoginDescription": "Введите номер телефона, чтобы продолжить. Мы отправим на него код подтверждения для входа или регистрации. Убедитесь, что у вас есть доступ к указанному номеру",
+  "@phoneLoginDescription": {
+    "description": "Описание процесса входа или регистрации по номеру телефона"
+  },
+
+  "phoneNumberHint": "Введите номер телефона",
+  "@phoneNumberHint": {
+    "description": "Подсказка для поля ввода номера телефона"
+  },
+
+  "phoneNumberExample": "+71234567890",
+  "@phoneNumberExample": {
+    "description": "Пример номера телефона в международном формате"
+  },
+
+  "privacyPolicy": "Политика конфиденциальности",
+  "@privacyPolicy": {
+    "description": "Ссылка на политику конфиденциальности"
+  },
+
+  "personalDataConsent": "Согласен с обработкой персональных данных",
+  "@personalDataConsent": {
+    "description": "Текст согласия на обработку персональных данных"
+  },
+
+  "getCode": "Получить код",
+  "@getCode": {
+    "description": "Текст кнопки для получения кода подтверждения"
+  },
+
+  "enterVerificationCode": "Введите код, отправленный на указанный номер телефона",
+  "@enterVerificationCode": {
+    "description": "Инструкция для ввода кода подтверждения"
+  },
+  
+  "resendCodeIn": "Получить новый код через {time}",
+  "@resendCodeIn": {
+    "description": "Текст перед таймером повторной отправки кода",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "resendCode": "Получить новый код",
+  "@resendCode": {
+    "description": "Кнопка повторной отправки кода подтверждения"
+  },
+
+  "continueButton": "Продолжить",
+  "@continueButton": {
+    "description": "Кнопка продолжения"
+  },
+
+  "useAnotherPhoneNumber": "Использовать другой номер",
+  "@useAnotherPhoneNumber": {
+    "description": "Действие для смены номера телефона"
+  },
+
+  "invalidCodeAttemptsRemaining": "Код неверный. Осталось попыток: {attempts}",
+  "@invalidCodeAttemptsRemaining": {
+    "description": "Сообщение об ошибочном коде с количеством оставшихся попыток",
+    "placeholders": {
+      "attempts": {
+        "type": "int"
+      }
+    }
+  },
+
+  "tooManyAttemptsCallAvailableIn": "Слишком много попыток. Заказать новый звонок можно через {time}",
+  "@tooManyAttemptsCallAvailableIn": {
+    "description": "Сообщение об ограничении попыток с временем до повторного звонка",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "start": "Начать",
+  "@start": {
+    "description": "Надпись на кнопке начала действия"
+  }
+}

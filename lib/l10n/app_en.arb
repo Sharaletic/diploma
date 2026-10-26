@@ -1,0 +1,97 @@
+{
+  "@@locale": "en",
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+
+  "loginTitle": "Sign In or create your account",
+  "@loginTitle": {
+    "description": "Title of the app sign-in screen"
+  },
+
+  "phoneLoginDescription": "Enter your phone number to continue. We will send a verification code to this number for sign-in or registration. Make sure you have access to the number provided",
+  "@phoneLoginDescription": {
+    "description": "Description of the sign-in or registration process using a phone number"
+  },
+
+  "phoneNumberHint": "Enter phone number",
+  "@phoneNumberHint": {
+    "description": "Hint for the phone number input field"
+  },
+  
+  "phoneNumberExample": "+71234567890",
+  "@phoneNumberExample": {
+    "description": "Example of a phone number in international format"
+  },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Link to the privacy policy"
+  },
+
+  "personalDataConsent": "I agree to the processing of personal data",
+  "@personalDataConsent": {
+    "description": "Consent text for personal data processing"
+  },
+  
+  "getCode": "Get code",
+  "@getCode": {
+    "description": "Text for the button used to request a verification code"
+  },
+
+    "enterVerificationCode": "Enter the code sent to the specified phone number",
+  "@enterVerificationCode": {
+    "description": "Instruction to enter the verification code"
+  },
+  
+  "resendCodeIn": "Get a new code in {time}",
+  "@resendCodeIn": {
+    "description": "Text displayed before the code resend countdown",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "resendCode": "Get a new code",
+  "@resendCode": {
+    "description": "Button to request a new verification code"
+  },
+
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Button to continue"
+  },
+
+  "useAnotherPhoneNumber": "Use another phone number",
+  "@useAnotherPhoneNumber": {
+    "description": "Action to change the phone number"
+  },
+
+  "invalidCodeAttemptsRemaining": "Incorrect code. Attempts remaining: {attempts}",
+  "@invalidCodeAttemptsRemaining": {
+    "description": "Error message showing the number of remaining attempts",
+    "placeholders": {
+      "attempts": {
+        "type": "int"
+      }
+    }
+  },
+
+  "tooManyAttemptsCallAvailableIn": "Too many attempts. You can request a new call in {time}",
+  "@tooManyAttemptsCallAvailableIn": {
+    "description": "Message showing when another verification call can be requested",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "start": "Start",
+  "@start": {
+    "description": "Button label to start"
+  }
+}
