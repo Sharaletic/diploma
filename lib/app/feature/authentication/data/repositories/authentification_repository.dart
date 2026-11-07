@@ -1,5 +1,3 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import '../../../../../core/rest_client/common_rest_client.dart';
 import '../../authentication.dart';
 
@@ -19,19 +17,26 @@ abstract interface class IAuthenticationRepository {
     required String challengeId,
     required String requestId,
   });
+
+  Future<AuthenticatedResponse?> refresh();
+
+  Future<void> logout({required String accessToken});
 }
 
 class AuthenticationRepository implements IAuthenticationRepository {
   AuthenticationRepository({required this._restClient, required this._storage});
 
   final RestClient _restClient;
-  final FlutterSecureStorage _storage;
+  final IRefreshTokenStorage _storage;
 
   Future<T> _guard<T>(Future<T> Function() request) async {
     try {
       return await request();
     } on ApiException catch (e, stackTrace) {
-      switch (e.code) {
+      final detailCode = e.details?['code'];
+      final code = detailCode is String ? detailCode : e.code;
+
+      switch (code) {
         case 'otp_wrong_code':
           Error.throwWithStackTrace(
             OtpWrongCodeException.fromApi(e),
@@ -76,7 +81,10 @@ class AuthenticationRepository implements IAuthenticationRepository {
     );
 
     final session = AuthenticatedResponseDto.fromJson(response).toDomain();
-    await _storage.write(key: 'refresh_token', value: session.refreshToken);
+    await _storage.save(
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+    );
 
     return session;
   });
@@ -93,4 +101,29 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
     return OtpChallengeDto.fromJson(response).toDomain();
   });
+
+  @override
+  Future<AuthenticatedResponse?> refresh() async {
+    final refreshToken = await _storage.read();
+    if (refreshToken == null || refreshToken.isEmpty) return null;
+
+    final response = await _restClient.post(
+      '/auth/mobile/refresh',
+      body: {'refresh_token': refreshToken},
+    );
+
+    final session = AuthenticatedResponseDto.fromJson(response).toDomain();
+    await _storage.save(
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+    );
+
+    return session;
+  }
+
+  @override
+  Future<void> logout({required String accessToken}) async {
+    await _restClient.post('/auth/mobile/logout');
+    await _storage.clear();
+  }
 }

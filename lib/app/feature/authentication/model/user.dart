@@ -87,8 +87,8 @@ final class NotAuthenticatedUser extends UserEntity {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is AuthenticatedUser;
+      identical(this, other) || other is NotAuthenticatedUser;
 
   @override
-  String toString() => 'AuthenticatedUser{}';
+  String toString() => 'NotAuthenticatedUser{}';
 }

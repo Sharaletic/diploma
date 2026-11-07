@@ -24,8 +24,6 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
   final IAuthenticationRepository _repository;
 
   OtpChallenge? _challenge;
-  String? _phone;
-  bool? _personalDataConsent;
 
   Future<void> _onCreateChallenge(
     CreateChallenge event,
@@ -41,8 +39,7 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
         requestId: requestId,
       );
       _challenge = challenge;
-      _phone = event.phone;
-      _personalDataConsent = event.personalDataConsent;
+
       emit(
         AuthSessionState.challengeCreated(
           requestId: requestId,
@@ -111,11 +108,32 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
     ResendCode event,
     Emitter<AuthSessionState> emit,
   ) async {
+    final requestId = const Uuid().v4();
+
+    final challenge = _challenge;
+
+    if (challenge == null) {
+      emit(
+        AuthSessionState.failed(
+          error: 'Challenge is not created',
+          stackTrace: StackTrace.current,
+        ),
+      );
+      return;
+    }
+
     try {
-      add(
-        AuthSessionEvent.createChallenge(
-          phone: _phone!,
-          personalDataConsent: _personalDataConsent!,
+      final newChallenge = await _repository.resendCode(
+        challengeId: challenge.challengeId,
+        requestId: requestId,
+      );
+
+      _challenge = newChallenge;
+
+      emit(
+        AuthSessionState.challengeCreated(
+          requestId: requestId,
+          challenge: newChallenge,
         ),
       );
     } on Object catch (e, st) {

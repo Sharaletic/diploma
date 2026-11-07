@@ -49,7 +49,7 @@ class _FormContentState extends State<FormContent> with _FormStateMixin {
                 onChange: (value) => _isAgree.value = value,
               ),
             ),
-            const SizedBox(height: 200),
+            const SizedBox(height: 180),
             BlocBuilder<AuthSessionBloc, AuthSessionState>(
               buildWhen: (prev, curr) => prev is Loading || curr is Loading,
               builder: (context, state) {

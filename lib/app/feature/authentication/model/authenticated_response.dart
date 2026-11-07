@@ -6,7 +6,7 @@ enum AuthStatus { authenticated, unauthenticated, unknown }
 
 enum TokenType { bearer, unknown }
 
-@freezed
+@Freezed(toStringOverride: false)
 abstract class AuthenticatedResponse with _$AuthenticatedResponse {
   const AuthenticatedResponse._();
 

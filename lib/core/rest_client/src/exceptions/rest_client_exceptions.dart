@@ -36,7 +36,7 @@ enum OtpRateLimitCode {
 
 class OtpWrongCodeException extends RestClientException {
   OtpWrongCodeException({
-    super.message = 'OTP resend is temporarily unavailable',
+    super.message = 'The OTP code is incorrect',
     super.statusCode = 400,
     this.requestId,
     required this.retryAfterSeconds,
@@ -47,16 +47,26 @@ class OtpWrongCodeException extends RestClientException {
 
   factory OtpWrongCodeException.fromApi(ApiException e) {
     final d = e.details ?? const {};
-    DateTime date(String key) => DateTime.parse(d[key] as String);
+    final retryAfterSeconds = d['retry_after_seconds'];
+    final resendAvailableAt = d['resend_available_at'];
+    final attemptsRemaining = d['attempts_remaining'];
+    final serverTime = d['server_time'];
+
+    if (retryAfterSeconds is! int ||
+        resendAvailableAt is! String ||
+        attemptsRemaining is! int ||
+        serverTime is! String) {
+      throw const FormatException('Invalid OTP wrong-code error response');
+    }
 
     return OtpWrongCodeException(
       message: e.message,
       statusCode: e.statusCode,
       requestId: e.requestId,
-      retryAfterSeconds: d['retry_after_seconds'] as int,
-      resendAvailableAt: date('resend_available_at'),
-      attemptsRemaining: d['attempts_remaining'] as int,
-      serverTime: DateTime.parse(d['server_time'] as String),
+      retryAfterSeconds: retryAfterSeconds,
+      resendAvailableAt: DateTime.parse(resendAvailableAt),
+      attemptsRemaining: attemptsRemaining,
+      serverTime: DateTime.parse(serverTime),
     );
   }
 
@@ -95,6 +105,17 @@ class OtpRateLimitException extends RestClientException {
 
   factory OtpRateLimitException.fromApi(ApiException e) {
     final d = e.details ?? const {};
+    final detailCode = d['code'];
+    final code = detailCode is String ? detailCode : e.code;
+    final retryAfterSeconds = d['retry_after_seconds'];
+    final serverTime = d['server_time'];
+
+    if ((code != 'otp_resend_too_early' && code != 'otp_attempts_exceeded') ||
+        retryAfterSeconds is! int ||
+        serverTime is! String) {
+      throw const FormatException('Invalid OTP rate-limit error response');
+    }
+
     DateTime? date(String key) =>
         d[key] is String ? DateTime.parse(d[key] as String) : null;
 
@@ -102,10 +123,10 @@ class OtpRateLimitException extends RestClientException {
       message: e.message,
       statusCode: e.statusCode,
       requestId: e.requestId,
-      code: e.code,
-      retryAfterSeconds: d['retry_after_seconds'] as int,
+      code: code,
+      retryAfterSeconds: retryAfterSeconds,
       blockedUntil: date('blocked_until'),
-      serverTime: DateTime.parse(d['server_time'] as String),
+      serverTime: DateTime.parse(serverTime),
     );
   }
 

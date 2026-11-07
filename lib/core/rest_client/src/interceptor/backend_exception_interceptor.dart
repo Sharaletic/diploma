@@ -12,11 +12,14 @@ final class BackendExceptionInterceptor extends BaseInterceptor {
 
     final contentType = response.headers?['content-type']?.toLowerCase() ?? '';
 
-    if (contentType.contains('application/problem+json')) {
+    if (contentType.contains('json')) {
       final data = Map.of(response.data);
 
       final code = data.remove('code') as String? ?? 'Unknown Code';
-      final title = data.remove('title') as String? ?? 'Unknown Error';
+      final message =
+          data.remove('message') as String? ??
+          data.remove('title') as String? ??
+          'Unknown Error';
       final status = data.remove('status') as int? ?? response.statusCode;
       final details = data.remove('details') as Map<String, dynamic>?;
       final requestId = data.remove('request_id') as String?;
@@ -24,7 +27,7 @@ final class BackendExceptionInterceptor extends BaseInterceptor {
 
       throw ApiException(
         code: code,
-        message: title,
+        message: message,
         statusCode: status,
         details: details,
         requestId: requestId,

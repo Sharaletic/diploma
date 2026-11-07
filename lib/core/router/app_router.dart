@@ -13,7 +13,7 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: SignInRoute.page),
-    AutoRoute(page: PinCodeRoute.page, initial: true),
+    AutoRoute(page: SignInRoute.page, initial: true),
+    AutoRoute(page: PinCodeRoute.page),
   ];
 }

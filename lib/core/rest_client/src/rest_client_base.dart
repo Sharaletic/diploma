@@ -80,7 +80,7 @@ abstract base class RestClientBase implements RestClient {
   @override
   Future<Map<String, Object?>> post(
     String path, {
-    required Map<String, Object?> body,
+    Map<String, Object?>? body,
     Map<String, String>? headers,
     Map<String, String?>? queryParams,
   }) => send(

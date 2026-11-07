@@ -1,5 +1,10 @@
 abstract interface class IRefreshTokenStorage {
-  Future<void> save(String refreshToken);
+  String? get accessToken;
+
+  Future<void> save({
+    required String accessToken,
+    required String refreshToken,
+  });
 
   Future<String?> read();
 

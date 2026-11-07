@@ -32,6 +32,8 @@ class _PinCodePageState extends State<PinCodePage> with _PinCodePageStateMixin {
             context.read<CountdownCubit>().start(retryAfter);
           case Failed(:final error):
             ErrorUtil.displayErrorSnackBar(context, error);
+          case ChallengeCreated(:final challenge):
+            context.read<CountdownCubit>().start(challenge.resendAfter);
           default:
         }
       },
@@ -108,7 +110,10 @@ class _PinCodePageState extends State<PinCodePage> with _PinCodePageStateMixin {
                             valueListenable: _isValid,
                             builder: (context, _, child) => UiButton.primaryLG(
                               label: Text(l10n.continueButton),
-                              onPressed: _isValid.value && !isBlocked
+                              onPressed:
+                                  _isValid.value &&
+                                      !isBlocked &&
+                                      state is! Loading
                                   ? () => _onVerifyCode(context)
                                   : null,
                             ),

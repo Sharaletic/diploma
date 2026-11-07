@@ -1,4 +1,5 @@
 import '../../ui_kit.dart';
+import 'dart:ui';
 
 Future<T?> showUiModalBottomSheet<T>({
   required BuildContext context,
@@ -9,23 +10,34 @@ Future<T?> showUiModalBottomSheet<T>({
   bool isScrollControlled = true,
   bool useRootNavigator = true,
   bool useSafeArea = true,
-  double? maxHeightFactor,
   RouteSettings? routeSettings,
   AnimationStyle? sheetAnimationStyle,
+  double blurSigma = 25,
+  double backgroundOpacity = 0.7,
 }) {
   final palette = Theme.of(context).appColorPalette;
+  final color = backgroundColor ?? palette.backgroundBottomSheet;
+
   return showModalBottomSheet<T>(
     context: context,
-    builder: builder,
-    backgroundColor: backgroundColor ?? palette.backgroundBottomSheet,
-    shape: const RoundedRectangleBorder(
-      borderRadius: .vertical(top: .circular(24)),
-    ),
+    backgroundColor: Colors.transparent,
+    elevation: 0,
     barrierColor: barrierColor,
     isScrollControlled: isScrollControlled,
     useRootNavigator: useRootNavigator,
     useSafeArea: useSafeArea,
     routeSettings: routeSettings,
+    sheetAnimationStyle: sheetAnimationStyle,
+    builder: (context) => ClipRRect(
+      borderRadius: const .vertical(top: .circular(24)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        child: ColoredBox(
+          color: color.withValues(alpha: backgroundOpacity),
+          child: builder(context),
+        ),
+      ),
+    ),
   );
 }
 
@@ -80,7 +92,7 @@ class UiModalBottomSheet extends StatelessWidget {
     super.key,
     required this.title,
     required this.content,
-    this.padding = const .symmetric(horizontal: 24, vertical: 12),
+    this.padding = const .only(top: 12, left: 24, right: 24, bottom: 34),
   });
   final String title;
   final Widget content;
