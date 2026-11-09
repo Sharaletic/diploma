@@ -11,7 +11,7 @@ class ModalBottomSheetPreview extends StatelessWidget {
         context: context,
 
         builder: (_) => UiModalBottomSheet(
-          title: 'Tittle Of Bottom Sheet',
+          title: 'Title Of Bottom Sheet',
           content: Column(
             children: [
               UiText(
@@ -21,6 +21,7 @@ class ModalBottomSheetPreview extends StatelessWidget {
               const UiTextField.underlinedTextField(
                 style: UiTextFieldStyle(hintText: 'Text input'),
               ),
+              const SizedBox(height: 400),
             ],
           ),
         ),

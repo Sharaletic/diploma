@@ -24,118 +24,146 @@ class _PinCodePageState extends State<PinCodePage> with _PinCodePageStateMixin {
     final l10n = context.localizations;
     final typography = context.typography;
 
-    return BlocConsumer<AuthSessionBloc, AuthSessionState>(
-      listener: (context, state) {
-        switch (state) {
-          case InvalidCode(:final retryAfter) || RateLimited(:final retryAfter):
-            _codeController.clear();
-            context.read<CountdownCubit>().start(retryAfter);
-          case Failed(:final error):
-            ErrorUtil.displayErrorSnackBar(context, error);
-          case ChallengeCreated(:final challenge):
-            context.read<CountdownCubit>().start(challenge.resendAfter);
-          default:
+    return BlocListener<CountdownCubit, Duration>(
+      listenWhen: (previous, current) => previous > .zero && current <= .zero,
+      listener: (context, left) {
+        if (context.read<AuthSessionBloc>().state is AttemptsExceeded) {
+          context.router.pop();
         }
       },
-      builder: (context, state) {
-        return BlocBuilder<CountdownCubit, Duration>(
-          builder: (context, left) {
-            return ListenableBuilder(
-              listenable: _codeController,
-              builder: (context, _) {
-                final isBlocked = state is RateLimited && left > .zero;
-                final showInvalid =
-                    state is InvalidCode && _codeController.text.isEmpty;
+      child: BlocConsumer<AuthSessionBloc, AuthSessionState>(
+        listener: (context, state) {
+          switch (state) {
+            case InvalidCode(:final retryAfter) ||
+                RateLimited(:final retryAfter):
+              _codeController.clear();
+              context.read<CountdownCubit>().start(retryAfter);
+            case AttemptsExceeded(:final retryAfter):
+              _codeController.clear();
+              _startAttemptsExceededCountdown(context, retryAfter);
+            case Failed(:final error):
+              ErrorUtil.displayErrorSnackBar(context, error);
+            case ChallengeCreated(:final challenge):
+              context.read<CountdownCubit>().start(challenge.resendAfter);
+            default:
+          }
+        },
+        builder: (context, state) {
+          return BlocBuilder<CountdownCubit, Duration>(
+            builder: (context, left) {
+              return ListenableBuilder(
+                listenable: _codeController,
+                builder: (context, _) {
+                  final isAttemptsExceeded = state is AttemptsExceeded;
+                  final isBlocked =
+                      isAttemptsExceeded ||
+                      (state is RateLimited && left > .zero);
 
-                final errorText = switch (state) {
-                  InvalidCode(:final attemptsRemaining) when showInvalid =>
-                    l10n.invalidCodeAttemptsRemaining(attemptsRemaining),
-                  RateLimited(:final retryAfter) when isBlocked =>
-                    l10n.tooManyAttemptsCallAvailableIn(_format(retryAfter)),
-                  _ => null,
-                };
+                  final showInvalid =
+                      state is InvalidCode && _codeController.text.isEmpty;
 
-                final hasError = isBlocked || showInvalid;
-                final enabled = !isBlocked;
+                  final errorText = switch (state) {
+                    InvalidCode(:final attemptsRemaining) when showInvalid =>
+                      l10n.invalidCodeAttemptsRemaining(attemptsRemaining),
+                    RateLimited() when isBlocked =>
+                      l10n.tooManyAttemptsCallAvailableIn(_format(left)),
+                    AttemptsExceeded() => l10n.tooManyAttemptsCallAvailableIn(
+                      _format(left),
+                    ),
+                    _ => null,
+                  };
 
-                return Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: SafeArea(
-                    child: Padding(
-                      padding: .only(top: 120, left: 24, right: 24, bottom: 34),
-                      child: Column(
-                        crossAxisAlignment: .stretch,
-                        children: [
-                          UiText(
-                            l10n.enterVerificationCode,
-                            typography.h2,
-                            textAlign: .center,
-                          ),
-                          const SizedBox(height: 16),
-                          UiOtpInput(
-                            controller: _codeController,
-                            isError: hasError,
-                            isEnabled: enabled,
-                          ),
-                          if (isBlocked && errorText != null) ...[
+                  final hasError = isBlocked || showInvalid;
+                  final enabled = !isBlocked;
+
+                  return Scaffold(
+                    resizeToAvoidBottomInset: false,
+                    body: SafeArea(
+                      child: Padding(
+                        padding: .only(
+                          top: 120,
+                          left: 24,
+                          right: 24,
+                          bottom: 34,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: .stretch,
+                          children: [
+                            UiText(
+                              l10n.enterVerificationCode,
+                              typography.h2,
+                              textAlign: .center,
+                            ),
                             const SizedBox(height: 16),
-                            UiErrorCard(message: errorText),
-                          ],
-                          if (showInvalid && errorText != null) ...[
-                            const SizedBox(height: 6),
-                            UiText(errorText, typography.caption1),
-                          ],
-                          if (left <= .zero || state is! RateLimited) ...[
-                            const SizedBox(height: 30),
+                            UiOtpInput(
+                              controller: _codeController,
+                              isError: hasError,
+                              isEnabled: enabled,
+                            ),
+                            if (isBlocked && errorText != null) ...[
+                              const SizedBox(height: 16),
+                              UiErrorCard(message: errorText),
+                            ],
+                            if (showInvalid && errorText != null) ...[
+                              const SizedBox(height: 6),
+                              UiText(errorText, typography.caption1),
+                            ],
+                            if (!isAttemptsExceeded &&
+                                (left <= .zero || state is! RateLimited)) ...[
+                              const SizedBox(height: 30),
+                              Align(
+                                alignment: .center,
+                                child: UiButton.secondary(
+                                  label: Text(l10n.getCode),
+                                  isLoading: state is Loading,
+                                  onPressed: () => context
+                                      .read<AuthSessionBloc>()
+                                      .add(AuthSessionEvent.resendCode()),
+                                ),
+                              ),
+                            ],
+                            if (left > .zero &&
+                                state is! RateLimited &&
+                                !isAttemptsExceeded) ...[
+                              const SizedBox(height: 16),
+                              UiText(
+                                l10n.resendCodeIn(_format(left)),
+                                typography.body1,
+                              ),
+                            ],
+                            const Spacer(),
+                            ValueListenableBuilder(
+                              valueListenable: _isValid,
+                              builder: (context, _, child) =>
+                                  UiButton.primaryLG(
+                                    label: Text(l10n.continueButton),
+                                    onPressed:
+                                        _isValid.value &&
+                                            !isBlocked &&
+                                            state is! Loading
+                                        ? () => _onVerifyCode(context)
+                                        : null,
+                                  ),
+                            ),
+                            const SizedBox(height: 40),
                             Align(
                               alignment: .center,
-                              child: UiButton.secondary(
-                                label: Text(l10n.getCode),
-                                isLoading: state is Loading,
-                                onPressed: () => context
-                                    .read<AuthSessionBloc>()
-                                    .add(AuthSessionEvent.resendCode()),
+                              child: UiButton.text(
+                                onPressed: () => context.router.pop(),
+                                label: Text(l10n.useAnotherPhoneNumber),
                               ),
                             ),
                           ],
-                          if (left > .zero && state is! RateLimited) ...[
-                            const SizedBox(height: 16),
-                            UiText(
-                              l10n.resendCodeIn(_format(left)),
-                              typography.body1,
-                            ),
-                          ],
-                          const Spacer(),
-                          ValueListenableBuilder(
-                            valueListenable: _isValid,
-                            builder: (context, _, child) => UiButton.primaryLG(
-                              label: Text(l10n.continueButton),
-                              onPressed:
-                                  _isValid.value &&
-                                      !isBlocked &&
-                                      state is! Loading
-                                  ? () => _onVerifyCode(context)
-                                  : null,
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          Align(
-                            alignment: .center,
-                            child: UiButton.text(
-                              onPressed: () => context.router.pop(),
-                              label: Text(l10n.useAnotherPhoneNumber),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -157,6 +185,8 @@ mixin _PinCodePageStateMixin on State<PinCodePage> {
         cubit.start(challenge.resendAfter);
       case RateLimited(:final retryAfter):
         cubit.start(retryAfter);
+      case AttemptsExceeded(:final retryAfter):
+        _startAttemptsExceededCountdown(context, retryAfter);
       default:
     }
   }
@@ -179,6 +209,23 @@ mixin _PinCodePageStateMixin on State<PinCodePage> {
     context.read<AuthSessionBloc>().add(
       AuthSessionEvent.verifyCode(code: _codeController.text),
     );
+  }
+
+  void _startAttemptsExceededCountdown(
+    BuildContext context,
+    Duration retryAfter,
+  ) {
+    if (retryAfter > .zero) {
+      context.read<CountdownCubit>().start(retryAfter);
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          context.read<AuthSessionBloc>().state is AttemptsExceeded) {
+        context.router.pop();
+      }
+    });
   }
 
   String _format(Duration d) {

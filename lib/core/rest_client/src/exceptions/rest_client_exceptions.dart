@@ -27,12 +27,7 @@ final class ApiException extends RestClientException {
       'requestId: $requestId)';
 }
 
-enum OtpRateLimitCode {
-  otpResendTooEarly,
-  otpAttemptsExceeded,
-  otpWrongCode,
-  unknown,
-}
+enum OtpRateLimitCode { otpResendTooEarly, otpAttemptsExceeded, unknown }
 
 class OtpWrongCodeException extends RestClientException {
   OtpWrongCodeException({

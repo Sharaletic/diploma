@@ -14,10 +14,13 @@ sealed class AuthSessionState with _$AuthSessionState {
     required Duration retryAfter,
   }) = InvalidCode;
 
-  const factory AuthSessionState.rateLimited({
+  const factory AuthSessionState.rateLimited({required Duration retryAfter}) =
+      RateLimited;
+
+  const factory AuthSessionState.attemptsExceeded({
     required Duration retryAfter,
     required DateTime? blockedUntil,
-  }) = RateLimited;
+  }) = AttemptsExceeded;
 
   const factory AuthSessionState.authenticated({
     required AuthenticatedResponse session,

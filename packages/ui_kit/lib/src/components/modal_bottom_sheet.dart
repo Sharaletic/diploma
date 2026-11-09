@@ -12,7 +12,7 @@ Future<T?> showUiModalBottomSheet<T>({
   bool useSafeArea = true,
   RouteSettings? routeSettings,
   AnimationStyle? sheetAnimationStyle,
-  double blurSigma = 25,
+  double blurSigma = 20,
   double backgroundOpacity = 0.7,
 }) {
   final palette = Theme.of(context).appColorPalette;

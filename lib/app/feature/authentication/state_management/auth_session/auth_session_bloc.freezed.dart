@@ -182,7 +182,7 @@ return resendCode();case _:
 
 class CreateChallenge implements AuthSessionEvent {
   const CreateChallenge({required this.phone, required this.personalDataConsent});
-  
+
 
  final  String phone;
  final  bool personalDataConsent;
@@ -250,7 +250,7 @@ as bool,
 
 class VerifyCode implements AuthSessionEvent {
   const VerifyCode({required this.code});
-  
+
 
  final  String code;
 
@@ -316,7 +316,7 @@ as String,
 
 class ResendCode implements AuthSessionEvent {
   const ResendCode();
-  
+
 
 
 
@@ -387,14 +387,15 @@ extension AuthSessionStatePatterns on AuthSessionState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Initial value)?  initial,TResult Function( ChallengeCreated value)?  challengeCreated,TResult Function( InvalidCode value)?  invalidCode,TResult Function( RateLimited value)?  rateLimited,TResult Function( Authenticated value)?  authenticated,TResult Function( Failed value)?  failed,TResult Function( Loading value)?  loading,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Initial value)?  initial,TResult Function( ChallengeCreated value)?  challengeCreated,TResult Function( InvalidCode value)?  invalidCode,TResult Function( RateLimited value)?  rateLimited,TResult Function( AttemptsExceeded value)?  attemptsExceeded,TResult Function( Authenticated value)?  authenticated,TResult Function( Failed value)?  failed,TResult Function( Loading value)?  loading,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial(_that);case ChallengeCreated() when challengeCreated != null:
 return challengeCreated(_that);case InvalidCode() when invalidCode != null:
 return invalidCode(_that);case RateLimited() when rateLimited != null:
-return rateLimited(_that);case Authenticated() when authenticated != null:
+return rateLimited(_that);case AttemptsExceeded() when attemptsExceeded != null:
+return attemptsExceeded(_that);case Authenticated() when authenticated != null:
 return authenticated(_that);case Failed() when failed != null:
 return failed(_that);case Loading() when loading != null:
 return loading(_that);case _:
@@ -415,14 +416,15 @@ return loading(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Initial value)  initial,required TResult Function( ChallengeCreated value)  challengeCreated,required TResult Function( InvalidCode value)  invalidCode,required TResult Function( RateLimited value)  rateLimited,required TResult Function( Authenticated value)  authenticated,required TResult Function( Failed value)  failed,required TResult Function( Loading value)  loading,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Initial value)  initial,required TResult Function( ChallengeCreated value)  challengeCreated,required TResult Function( InvalidCode value)  invalidCode,required TResult Function( RateLimited value)  rateLimited,required TResult Function( AttemptsExceeded value)  attemptsExceeded,required TResult Function( Authenticated value)  authenticated,required TResult Function( Failed value)  failed,required TResult Function( Loading value)  loading,}){
 final _that = this;
 switch (_that) {
 case Initial():
 return initial(_that);case ChallengeCreated():
 return challengeCreated(_that);case InvalidCode():
 return invalidCode(_that);case RateLimited():
-return rateLimited(_that);case Authenticated():
+return rateLimited(_that);case AttemptsExceeded():
+return attemptsExceeded(_that);case Authenticated():
 return authenticated(_that);case Failed():
 return failed(_that);case Loading():
 return loading(_that);}
@@ -439,14 +441,15 @@ return loading(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Initial value)?  initial,TResult? Function( ChallengeCreated value)?  challengeCreated,TResult? Function( InvalidCode value)?  invalidCode,TResult? Function( RateLimited value)?  rateLimited,TResult? Function( Authenticated value)?  authenticated,TResult? Function( Failed value)?  failed,TResult? Function( Loading value)?  loading,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Initial value)?  initial,TResult? Function( ChallengeCreated value)?  challengeCreated,TResult? Function( InvalidCode value)?  invalidCode,TResult? Function( RateLimited value)?  rateLimited,TResult? Function( AttemptsExceeded value)?  attemptsExceeded,TResult? Function( Authenticated value)?  authenticated,TResult? Function( Failed value)?  failed,TResult? Function( Loading value)?  loading,}){
 final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial(_that);case ChallengeCreated() when challengeCreated != null:
 return challengeCreated(_that);case InvalidCode() when invalidCode != null:
 return invalidCode(_that);case RateLimited() when rateLimited != null:
-return rateLimited(_that);case Authenticated() when authenticated != null:
+return rateLimited(_that);case AttemptsExceeded() when attemptsExceeded != null:
+return attemptsExceeded(_that);case Authenticated() when authenticated != null:
 return authenticated(_that);case Failed() when failed != null:
 return failed(_that);case Loading() when loading != null:
 return loading(_that);case _:
@@ -466,13 +469,14 @@ return loading(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String requestId,  OtpChallenge challenge)?  challengeCreated,TResult Function( int attemptsRemaining,  Duration retryAfter)?  invalidCode,TResult Function( Duration retryAfter,  DateTime? blockedUntil)?  rateLimited,TResult Function( AuthenticatedResponse session)?  authenticated,TResult Function( String error,  StackTrace stackTrace)?  failed,TResult Function()?  loading,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String requestId,  OtpChallenge challenge)?  challengeCreated,TResult Function( int attemptsRemaining,  Duration retryAfter)?  invalidCode,TResult Function( Duration retryAfter)?  rateLimited,TResult Function( Duration retryAfter,  DateTime? blockedUntil)?  attemptsExceeded,TResult Function( AuthenticatedResponse session)?  authenticated,TResult Function( String error,  StackTrace stackTrace)?  failed,TResult Function()?  loading,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case ChallengeCreated() when challengeCreated != null:
 return challengeCreated(_that.requestId,_that.challenge);case InvalidCode() when invalidCode != null:
 return invalidCode(_that.attemptsRemaining,_that.retryAfter);case RateLimited() when rateLimited != null:
-return rateLimited(_that.retryAfter,_that.blockedUntil);case Authenticated() when authenticated != null:
+return rateLimited(_that.retryAfter);case AttemptsExceeded() when attemptsExceeded != null:
+return attemptsExceeded(_that.retryAfter,_that.blockedUntil);case Authenticated() when authenticated != null:
 return authenticated(_that.session);case Failed() when failed != null:
 return failed(_that.error,_that.stackTrace);case Loading() when loading != null:
 return loading();case _:
@@ -493,13 +497,14 @@ return loading();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String requestId,  OtpChallenge challenge)  challengeCreated,required TResult Function( int attemptsRemaining,  Duration retryAfter)  invalidCode,required TResult Function( Duration retryAfter,  DateTime? blockedUntil)  rateLimited,required TResult Function( AuthenticatedResponse session)  authenticated,required TResult Function( String error,  StackTrace stackTrace)  failed,required TResult Function()  loading,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String requestId,  OtpChallenge challenge)  challengeCreated,required TResult Function( int attemptsRemaining,  Duration retryAfter)  invalidCode,required TResult Function( Duration retryAfter)  rateLimited,required TResult Function( Duration retryAfter,  DateTime? blockedUntil)  attemptsExceeded,required TResult Function( AuthenticatedResponse session)  authenticated,required TResult Function( String error,  StackTrace stackTrace)  failed,required TResult Function()  loading,}) {final _that = this;
 switch (_that) {
 case Initial():
 return initial();case ChallengeCreated():
 return challengeCreated(_that.requestId,_that.challenge);case InvalidCode():
 return invalidCode(_that.attemptsRemaining,_that.retryAfter);case RateLimited():
-return rateLimited(_that.retryAfter,_that.blockedUntil);case Authenticated():
+return rateLimited(_that.retryAfter);case AttemptsExceeded():
+return attemptsExceeded(_that.retryAfter,_that.blockedUntil);case Authenticated():
 return authenticated(_that.session);case Failed():
 return failed(_that.error,_that.stackTrace);case Loading():
 return loading();}
@@ -516,13 +521,14 @@ return loading();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String requestId,  OtpChallenge challenge)?  challengeCreated,TResult? Function( int attemptsRemaining,  Duration retryAfter)?  invalidCode,TResult? Function( Duration retryAfter,  DateTime? blockedUntil)?  rateLimited,TResult? Function( AuthenticatedResponse session)?  authenticated,TResult? Function( String error,  StackTrace stackTrace)?  failed,TResult? Function()?  loading,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String requestId,  OtpChallenge challenge)?  challengeCreated,TResult? Function( int attemptsRemaining,  Duration retryAfter)?  invalidCode,TResult? Function( Duration retryAfter)?  rateLimited,TResult? Function( Duration retryAfter,  DateTime? blockedUntil)?  attemptsExceeded,TResult? Function( AuthenticatedResponse session)?  authenticated,TResult? Function( String error,  StackTrace stackTrace)?  failed,TResult? Function()?  loading,}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case ChallengeCreated() when challengeCreated != null:
 return challengeCreated(_that.requestId,_that.challenge);case InvalidCode() when invalidCode != null:
 return invalidCode(_that.attemptsRemaining,_that.retryAfter);case RateLimited() when rateLimited != null:
-return rateLimited(_that.retryAfter,_that.blockedUntil);case Authenticated() when authenticated != null:
+return rateLimited(_that.retryAfter);case AttemptsExceeded() when attemptsExceeded != null:
+return attemptsExceeded(_that.retryAfter,_that.blockedUntil);case Authenticated() when authenticated != null:
 return authenticated(_that.session);case Failed() when failed != null:
 return failed(_that.error,_that.stackTrace);case Loading() when loading != null:
 return loading();case _:
@@ -538,7 +544,7 @@ return loading();case _:
 
 class Initial implements AuthSessionState {
   const Initial();
-  
+
 
 
 
@@ -570,7 +576,7 @@ String toString() {
 
 class ChallengeCreated implements AuthSessionState {
   const ChallengeCreated({required this.requestId, required this.challenge});
-  
+
 
  final  String requestId;
  final  OtpChallenge challenge;
@@ -635,7 +641,7 @@ as OtpChallenge,
 @override
 @pragma('vm:prefer-inline')
 $OtpChallengeCopyWith<$Res> get challenge {
-  
+
   return $OtpChallengeCopyWith<$Res>(_self.challenge, (value) {
     return _then(_self.copyWith(challenge: value));
   });
@@ -647,7 +653,7 @@ $OtpChallengeCopyWith<$Res> get challenge {
 
 class InvalidCode implements AuthSessionState {
   const InvalidCode({required this.attemptsRemaining, required this.retryAfter});
-  
+
 
  final  int attemptsRemaining;
  final  Duration retryAfter;
@@ -714,11 +720,10 @@ as Duration,
 
 
 class RateLimited implements AuthSessionState {
-  const RateLimited({required this.retryAfter, required this.blockedUntil});
-  
+  const RateLimited({required this.retryAfter});
+
 
  final  Duration retryAfter;
- final  DateTime? blockedUntil;
 
 /// Create a copy of AuthSessionState
 /// with the given fields replaced by the non-null parameter values.
@@ -730,16 +735,16 @@ $RateLimitedCopyWith<RateLimited> get copyWith => _$RateLimitedCopyWithImpl<Rate
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RateLimited&&(identical(other.retryAfter, retryAfter) || other.retryAfter == retryAfter)&&(identical(other.blockedUntil, blockedUntil) || other.blockedUntil == blockedUntil));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RateLimited&&(identical(other.retryAfter, retryAfter) || other.retryAfter == retryAfter));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,retryAfter,blockedUntil);
+int get hashCode => Object.hash(runtimeType,retryAfter);
 
 @override
 String toString() {
-  return 'AuthSessionState.rateLimited(retryAfter: $retryAfter, blockedUntil: $blockedUntil)';
+  return 'AuthSessionState.rateLimited(retryAfter: $retryAfter)';
 }
 
 
@@ -750,7 +755,7 @@ abstract mixin class $RateLimitedCopyWith<$Res> implements $AuthSessionStateCopy
   factory $RateLimitedCopyWith(RateLimited value, $Res Function(RateLimited) _then) = _$RateLimitedCopyWithImpl;
 @useResult
 $Res call({
- Duration retryAfter, DateTime? blockedUntil
+ Duration retryAfter
 });
 
 
@@ -767,8 +772,75 @@ class _$RateLimitedCopyWithImpl<$Res>
 
 /// Create a copy of AuthSessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? retryAfter = null,Object? blockedUntil = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? retryAfter = null,}) {
   return _then(RateLimited(
+retryAfter: null == retryAfter ? _self.retryAfter : retryAfter // ignore: cast_nullable_to_non_nullable
+as Duration,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class AttemptsExceeded implements AuthSessionState {
+  const AttemptsExceeded({required this.retryAfter, required this.blockedUntil});
+
+
+ final  Duration retryAfter;
+ final  DateTime? blockedUntil;
+
+/// Create a copy of AuthSessionState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AttemptsExceededCopyWith<AttemptsExceeded> get copyWith => _$AttemptsExceededCopyWithImpl<AttemptsExceeded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AttemptsExceeded&&(identical(other.retryAfter, retryAfter) || other.retryAfter == retryAfter)&&(identical(other.blockedUntil, blockedUntil) || other.blockedUntil == blockedUntil));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,retryAfter,blockedUntil);
+
+@override
+String toString() {
+  return 'AuthSessionState.attemptsExceeded(retryAfter: $retryAfter, blockedUntil: $blockedUntil)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AttemptsExceededCopyWith<$Res> implements $AuthSessionStateCopyWith<$Res> {
+  factory $AttemptsExceededCopyWith(AttemptsExceeded value, $Res Function(AttemptsExceeded) _then) = _$AttemptsExceededCopyWithImpl;
+@useResult
+$Res call({
+ Duration retryAfter, DateTime? blockedUntil
+});
+
+
+
+
+}
+/// @nodoc
+class _$AttemptsExceededCopyWithImpl<$Res>
+    implements $AttemptsExceededCopyWith<$Res> {
+  _$AttemptsExceededCopyWithImpl(this._self, this._then);
+
+  final AttemptsExceeded _self;
+  final $Res Function(AttemptsExceeded) _then;
+
+/// Create a copy of AuthSessionState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? retryAfter = null,Object? blockedUntil = freezed,}) {
+  return _then(AttemptsExceeded(
 retryAfter: null == retryAfter ? _self.retryAfter : retryAfter // ignore: cast_nullable_to_non_nullable
 as Duration,blockedUntil: freezed == blockedUntil ? _self.blockedUntil : blockedUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -783,7 +855,7 @@ as DateTime?,
 
 class Authenticated implements AuthSessionState {
   const Authenticated({required this.session});
-  
+
 
  final  AuthenticatedResponse session;
 
@@ -846,7 +918,7 @@ as AuthenticatedResponse,
 @override
 @pragma('vm:prefer-inline')
 $AuthenticatedResponseCopyWith<$Res> get session {
-  
+
   return $AuthenticatedResponseCopyWith<$Res>(_self.session, (value) {
     return _then(_self.copyWith(session: value));
   });
@@ -858,7 +930,7 @@ $AuthenticatedResponseCopyWith<$Res> get session {
 
 class Failed implements AuthSessionState {
   const Failed({required this.error, required this.stackTrace});
-  
+
 
  final  String error;
  final  StackTrace stackTrace;
@@ -926,7 +998,7 @@ as StackTrace,
 
 class Loading implements AuthSessionState {
   const Loading();
-  
+
 
 
 

@@ -25,7 +25,14 @@ class _FormContentState extends State<FormContent> with _FormStateMixin {
         if (ModalRoute.of(context)?.isCurrent != true) return;
         state.mapOrNull(
           challengeCreated: (state) => context.router.push(PinCodeRoute()),
-          rateLimited: (state) => context.router.push(PinCodeRoute()),
+          rateLimited: (state) => ErrorUtil.displayErrorSnackBar(
+            context,
+            l10n.resendCodeIn(_format(state.retryAfter)),
+          ),
+          attemptsExceeded: (state) => ErrorUtil.displayErrorSnackBar(
+            context,
+            l10n.tooManyAttemptsCallAvailableIn(_format(state.retryAfter)),
+          ),
           failed: (state) =>
               ErrorUtil.displayErrorSnackBar(context, state.error),
         );
@@ -125,5 +132,12 @@ mixin _FormStateMixin on State<FormContent> {
         personalDataConsent: _isAgree.value,
       ),
     );
+  }
+
+  String _format(Duration d) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    final m = two(d.inMinutes.remainder(60));
+    final s = two(d.inSeconds.remainder(60));
+    return d.inHours > 0 ? '${d.inHours}:$m:$s' : '$m:$s';
   }
 }

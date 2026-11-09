@@ -30,6 +30,7 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
     Emitter<AuthSessionState> emit,
   ) async {
     emit(const AuthSessionState.loading());
+    _challenge = null;
 
     try {
       final requestId = const Uuid().v4();
@@ -47,10 +48,19 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
         ),
       );
     } on OtpRateLimitException catch (e) {
+      if (e.code == .otpAttemptsExceeded) {
+        emit(
+          AuthSessionState.attemptsExceeded(
+            retryAfter: Duration(seconds: e.retryAfterSeconds),
+            blockedUntil: e.blockedUntil,
+          ),
+        );
+        return;
+      }
+
       emit(
         AuthSessionState.rateLimited(
           retryAfter: Duration(seconds: e.retryAfterSeconds),
-          blockedUntil: e.blockedUntil,
         ),
       );
     } on Object catch (e, st) {
@@ -84,12 +94,20 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
       _challenge = null;
       emit(AuthSessionState.authenticated(session: session));
     } on OtpRateLimitException catch (e) {
-      if (e.code == .otpAttemptsExceeded) _challenge = null;
+      if (e.code == .otpAttemptsExceeded) {
+        _challenge = null;
+        emit(
+          AuthSessionState.attemptsExceeded(
+            retryAfter: Duration(seconds: e.retryAfterSeconds),
+            blockedUntil: e.blockedUntil,
+          ),
+        );
+        return;
+      }
 
       emit(
         AuthSessionState.rateLimited(
           retryAfter: Duration(seconds: e.retryAfterSeconds),
-          blockedUntil: e.blockedUntil,
         ),
       );
     } on OtpWrongCodeException catch (e) {
@@ -134,6 +152,23 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
         AuthSessionState.challengeCreated(
           requestId: requestId,
           challenge: newChallenge,
+        ),
+      );
+    } on OtpRateLimitException catch (e) {
+      if (e.code == .otpAttemptsExceeded) {
+        _challenge = null;
+        emit(
+          AuthSessionState.attemptsExceeded(
+            retryAfter: Duration(seconds: e.retryAfterSeconds),
+            blockedUntil: e.blockedUntil,
+          ),
+        );
+        return;
+      }
+
+      emit(
+        AuthSessionState.rateLimited(
+          retryAfter: Duration(seconds: e.retryAfterSeconds),
         ),
       );
     } on Object catch (e, st) {
